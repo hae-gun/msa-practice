@@ -21,3 +21,6 @@ spring:
           predicates:
             - Path=/second-service/**
 # Netty Service 로 동작된다. 비동기 서비스.
+# 해당 gateway 로 요청을 넣게되면
+# Zuul 과는 다르게 uri/Path 형태로 요청을 하게됨.
+# 즉 각 서비스의 컨트롤러에 /first-service, /second-service RequestMapping 이 정의 되어있어야 한다.
