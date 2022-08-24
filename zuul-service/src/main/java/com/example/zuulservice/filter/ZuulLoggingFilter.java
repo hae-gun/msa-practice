@@ -25,7 +25,7 @@ public class ZuulLoggingFilter extends ZuulFilter {
 
     @Override
     public String filterType() {
-        return "pre"; // 사전 사후 설정
+        return "pre"; // 사전(pre) 사후(post) 설정
     }
 
     @Override
