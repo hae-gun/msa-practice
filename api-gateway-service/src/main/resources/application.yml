@@ -2,8 +2,8 @@ server:
   port: 8000
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
 spring:
@@ -11,21 +11,34 @@ spring:
     name: api-gateway-service
   cloud:
     gateway:
+      default-filters:
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
         - id: first-service
-          uri: http://localhost:8081
+          uri: lb://MY-FIRST-SERVICE # Eureka 에 등록할떄는 URL을 lb://{Eureka에 등록된 Name} 으로 설정해준다.
           predicates:
-            - Path=/first-service/**
+          - Path=/first-service/**
           filters:
-            - AddRequestHeader=first-request, first-request-header2
-            - AddResponseHeader=first-response, first-response-header2
+          - CustomFilter
+        #            - AddRequestHeader=first-request, first-request-header2
+        #            - AddResponseHeader=first-response, first-response-header2
         - id: second-service
-          uri: http://localhost:8082
+          uri: lb://MY-SECOND-SERVICE
           predicates:
-            - Path=/second-service/**
+          - Path=/second-service/**
           filters:
-            - AddRequestHeader=second-request, second-request-header2
-            - AddResponseHeader=second-response, second-response-header2
+          - name: CustomFilter
+          - name: LoggingFilter
+            args:
+              baseMessage: Spring Cloud Gateway Logging Filter
+              preLogger: true
+              postLogger: true
+#            - AddRequestHeader=second-request, second-request-header2
+#            - AddResponseHeader=second-response, second-response-header2
 # Netty Service 로 동작된다. 비동기 서비스.
 # 해당 gateway 로 요청을 넣게되면
 # Zuul 과는 다르게 uri/Path 형태로 요청을 하게됨.
