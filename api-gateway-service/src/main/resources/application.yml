@@ -22,25 +22,29 @@ spring:
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
-        - id: first-service
-          uri: lb://MY-FIRST-SERVICE # Eureka 에 등록할떄는 URL을 lb://{Eureka에 등록된 Name} 으로 설정해준다.
+        - id: catalog-service
+          uri: lb://CATALOG-SERVICE
           predicates:
-          - Path=/first-service/**
-          filters:
-          - CustomFilter
-        #            - AddRequestHeader=first-request, first-request-header2
-        #            - AddResponseHeader=first-response, first-response-header2
-        - id: second-service
-          uri: lb://MY-SECOND-SERVICE
-          predicates:
-          - Path=/second-service/**
-          filters:
-          - name: CustomFilter
-          - name: LoggingFilter
-            args:
-              baseMessage: Spring Cloud Gateway Logging Filter
-              preLogger: true
-              postLogger: true
+            - Path=/catalog-service/**
+#        - id: first-service
+#          uri: lb://MY-FIRST-SERVICE # Eureka 에 등록할떄는 URL을 lb://{Eureka에 등록된 Name} 으로 설정해준다.
+#          predicates:
+#          - Path=/first-service/**
+#          filters:
+#          - CustomFilter
+#        #            - AddRequestHeader=first-request, first-request-header2
+#        #            - AddResponseHeader=first-response, first-response-header2
+#        - id: second-service
+#          uri: lb://MY-SECOND-SERVICE
+#          predicates:
+#          - Path=/second-service/**
+#          filters:
+#          - name: CustomFilter
+#          - name: LoggingFilter
+#            args:
+#              baseMessage: Spring Cloud Gateway Logging Filter
+#              preLogger: true
+#              postLogger: true
 #            - AddRequestHeader=second-request, second-request-header2
 #            - AddResponseHeader=second-response, second-response-header2
 # Netty Service 로 동작된다. 비동기 서비스.
