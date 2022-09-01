@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/catalog-service")
+@RequestMapping("/order-service")
 public class OrderController {
     private final OrderService orderService;
     private final Environment env;
@@ -34,8 +34,6 @@ public class OrderController {
     @PostMapping("/{userId}/orders")
     public ResponseEntity<ResponseOrder> createOrder(@RequestBody RequestOrder requestOrder, @PathVariable("userId") String userId){
         ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
         OrderDto orderDto = mapper.map(requestOrder, OrderDto.class);
         orderDto.setUserId(userId);
         OrderDto createOrder = orderService.createOrder(orderDto);
@@ -46,7 +44,7 @@ public class OrderController {
     }
 
     @GetMapping("{userId}/orders")
-    public ResponseEntity<List<ResponseOrder>> getOrder(@RequestBody RequestOrder requestOrder, @PathVariable("userId") String userId){
+    public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId){
         Iterable<OrderEntity> orderList =  orderService.getOrdersByUserId(userId);
 
         List<ResponseOrder> result = new ArrayList<>();
