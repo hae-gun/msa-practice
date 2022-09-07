@@ -46,6 +46,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
@@ -54,6 +55,8 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
+token:
+  secret: user_token
 #        - id: first-service
 #          uri: lb://MY-FIRST-SERVICE # Eureka 에 등록할떄는 URL을 lb://{Eureka에 등록된 Name} 으로 설정해준다.
 #          predicates:
