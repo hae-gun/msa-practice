@@ -47,6 +47,14 @@ spring:
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: catalog-service
           uri: lb://CATALOG-SERVICE
           predicates:
@@ -55,8 +63,6 @@ spring:
           uri: lb://ORDER-SERVICE
           predicates:
             - Path=/order-service/**
-token:
-  secret: user_token
 #        - id: first-service
 #          uri: lb://MY-FIRST-SERVICE # Eureka 에 등록할떄는 URL을 lb://{Eureka에 등록된 Name} 으로 설정해준다.
 #          predicates:
@@ -82,3 +88,8 @@ token:
 # 해당 gateway 로 요청을 넣게되면
 # Zuul 과는 다르게 uri/Path 형태로 요청을 하게됨.
 # 즉 각 서비스의 컨트롤러에 /first-service, /second-service RequestMapping 이 정의 되어있어야 한다.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace
