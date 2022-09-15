@@ -2,9 +2,24 @@ server:
   port: 8888
 spring:
   application:
-    name: config-server
+    name: config-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+  profiles:
+    active: native
   cloud:
     config:
       server:
         git:
-          uri: file:///Users/choehyegeun/Desktop/msa/config-yml
+      #          uri: file:///Users/choehyegeun/Desktop/msa/config-yml
+          uri: https://github.com/hae-gun/config-yml
+        native: # file 시스템에서 사용할때.
+          search-locations: file://${user.home}/Desktop/native-yml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
