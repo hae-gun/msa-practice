@@ -1,31 +1,47 @@
 package com.example.userserviceapplication.service;
 
+import com.example.userserviceapplication.client.OrderServiceClient;
 import com.example.userserviceapplication.dto.UserDto;
 import com.example.userserviceapplication.repository.UserEntity;
 import com.example.userserviceapplication.repository.UserRepository;
 import com.example.userserviceapplication.vo.ResponseOrder;
+import feign.Feign;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final Environment env;
+    private final RestTemplate restTemplate;
+    private final OrderServiceClient orderServiceClient;
 
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, Environment env, RestTemplate restTemplate, OrderServiceClient orderServiceClient) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.env = env;
+        this.restTemplate = restTemplate;
+        this.orderServiceClient = orderServiceClient;
     }
 
     @Override
@@ -45,17 +61,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(String userId) {
+    public UserDto getUserByUserId(String userId) {
 
         UserEntity userEntity = userRepository.findByUserId(userId);
 
-        if(userEntity == null){
+        if (userEntity == null) {
             throw new UsernameNotFoundException("User not found");
         }
 
         UserDto user = new ModelMapper().map(userEntity, UserDto.class);
-        List<ResponseOrder> orders = new ArrayList<>();
-        user.setOrders(orders);
+//        List<ResponseOrder> orders = new ArrayList<>();
+        /* Using as restTemplate */
+/*        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ResponseOrder>>() {
+        });
+        List<ResponseOrder> orderList = orderListResponse.getBody();
+*/
+        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+        user.setOrders(orderList);
 
         return user;
     }
@@ -69,7 +93,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByEmail(username);
 
-        if(userEntity == null){
+        if (userEntity == null) {
             throw new UsernameNotFoundException(username);
         }
         return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),
@@ -81,7 +105,7 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserDetailsByEmail(String email) {
         UserEntity userEntity = userRepository.findByEmail(email);
 
-        if(userEntity == null){
+        if (userEntity == null) {
             throw new UsernameNotFoundException(email);
         }
 

@@ -6,8 +6,6 @@ import com.example.userserviceapplication.service.UserService;
 import com.example.userserviceapplication.vo.Greeting;
 import com.example.userserviceapplication.vo.RequestUser;
 import com.example.userserviceapplication.vo.ResponseUser;
-import org.apache.catalina.mapper.Mapper;
-import org.apache.http.impl.entity.StrictContentLengthStrategy;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.core.env.Environment;
@@ -74,7 +72,7 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseUser> getUser(@PathVariable("userId") String userId) {
-        UserDto user = userService.getUserById(userId);
+        UserDto user = userService.getUserByUserId(userId);
 
         ResponseUser responseUser = new ModelMapper().map(user, ResponseUser.class);
 

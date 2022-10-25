@@ -29,7 +29,7 @@ greeting:
   message: Welcome to Simple E-Commerce
 logging:
   level:
-    com.example.userserviceapplication: DEBUG
+    com.example.userserviceapplication.client: DEBUG
 management:
   endpoints:
     web:
