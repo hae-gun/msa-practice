@@ -6,7 +6,7 @@ kafka connectors 설정
 http://localhost:8083/connectors
 
 source-connect
-
+-POST
 {
     "name" : "my-source-connect",
     "config" : {
@@ -23,7 +23,7 @@ source-connect
 }
 
 sink-connect
-
+-POST
 {
     "name" : "my-sink-connect",
     "config" : {
@@ -38,3 +38,12 @@ sink-connect
         "topics" : "my_topic_users"
         }
 }
+
+커넥터 정보확인
+
+-GET 127.0.0.1:8083/connectors/
+
+상세정보 확인
+
+-GET 127.0.0.1:8083/connectors/{커넥터명}/status
+
