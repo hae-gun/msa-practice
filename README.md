@@ -46,4 +46,3 @@ sink-connect
 상세정보 확인
 
 -GET 127.0.0.1:8083/connectors/{커넥터명}/status
-
