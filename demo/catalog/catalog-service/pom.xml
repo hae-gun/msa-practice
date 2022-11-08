@@ -65,6 +65,12 @@
             <artifactId>spring-boot-starter-validation</artifactId>
             <version>2.7.3</version>
         </dependency>
+
+        <!--    KAFKA    -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
