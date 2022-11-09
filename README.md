@@ -5,9 +5,9 @@ kafka connectors 설정
 
 http://localhost:8083/connectors
 
-source-connect
--POST
-{
+- source-connect (connector 의 producer 역할)
+- -POST
+- {
     "name" : "my-source-connect",
     "config" : {
         "connector.class" : "io.confluent.connect.jdbc.JdbcSourceConnector",
@@ -20,11 +20,11 @@ source-connect
         "topic.prefix" : "my_topic_",
         "tasks.max" : "1"
         }
-}
+    }
 
-sink-connect
--POST
-{
+- sink-connect (connector 의 consumer 역할)
+- POST
+- {
     "name" : "my-sink-connect",
     "config" : {
         "connector.class" : "io.confluent.connect.jdbc.JdbcSinkConnector",
@@ -37,7 +37,7 @@ sink-connect
         "tasks.max" : "1",
         "topics" : "my_topic_users"
         }
-}
+    }
 
 커넥터 정보확인
 
